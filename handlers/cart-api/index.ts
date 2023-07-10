@@ -16,8 +16,7 @@ async function bootstrap(): Promise<Server> {
 }
 
 export async function handler(event: any, context: Context): Promise<Response> {
-  console.log('Env variable from lambda handler: ', process.env.DB_HOST, process.env);
-
+  
   if (!cachedServer) {
     const server = await bootstrap();
     cachedServer = server;

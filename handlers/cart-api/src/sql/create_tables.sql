@@ -12,10 +12,10 @@ CREATE TABLE IF NOT EXISTS carts (
     id uuid DEFAULT uuid_generate_v4(),
     -- It's not Foreign key, because there is no user entity in DB
     user_id uuid NOT NULL,
-    created_at DATE NOT NULL,
-    updated_at DATE NOT NULL,
-    -- created_at TIMESTAMP NOT NULL,
-    -- updated_at TIMESTAMP NOT NULL,
+    -- created_at DATE NOT NULL,
+    -- updated_at DATE NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
     status status_enum,
     PRIMARY KEY (id)
 );

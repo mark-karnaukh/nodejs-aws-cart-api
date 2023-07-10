@@ -27,33 +27,31 @@ export class CartController {
   // @UseGuards(JwtAuthGuard)
   // @UseGuards(BasicAuthGuard)
   @Get()
-  findUserCart(@Req() req: AppRequest) {
-    const cart = this.cartService.findOrCreateByUserId(
-      getUserIdFromRequest(req),
+  async findUserCart(@Req() req: AppRequest) {
+    const cart = await this.cartService.findOrCreateByUserId(
+      // getUserIdFromRequest(req),
+      process.env.NEST_APP_USER_ID,
     );
-
-    console.log(
-      'Env variable from cart controller: ',
-      process.env.DB_HOST,
-      process.env,
-    );
-
-    console.log('App request (user): ', req.user);
 
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
-      data: { cart, total: calculateCartTotal(cart) },
+      data: {
+        cart,
+        // Commented for now (due to no integration with products table)
+        // total: calculateCartTotal(cart)
+      },
     };
   }
 
   // @UseGuards(JwtAuthGuard)
   // @UseGuards(BasicAuthGuard)
   @Put()
-  updateUserCart(@Req() req: AppRequest, @Body() body) {
+  async updateUserCart(@Req() req: AppRequest, @Body() body) {
     // TODO: validate body payload...
-    const cart = this.cartService.updateByUserId(
-      getUserIdFromRequest(req),
+    const cart = await this.cartService.updateByUserId(
+      // getUserIdFromRequest(req),
+      process.env.NEST_APP_USER_ID,
       body,
     );
 
@@ -62,7 +60,8 @@ export class CartController {
       message: 'OK',
       data: {
         cart,
-        total: calculateCartTotal(cart),
+        // Commented for now (due to no integration with products table)
+        // total: calculateCartTotal(cart),
       },
     };
   }
@@ -71,7 +70,10 @@ export class CartController {
   // @UseGuards(BasicAuthGuard)
   @Delete()
   clearUserCart(@Req() req: AppRequest) {
-    this.cartService.removeByUserId(getUserIdFromRequest(req));
+    this.cartService.removeByUserId(
+      // getUserIdFromRequest(req)
+      process.env.NEST_APP_USER_ID,
+    );
 
     return {
       statusCode: HttpStatus.OK,
@@ -82,9 +84,10 @@ export class CartController {
   // @UseGuards(JwtAuthGuard)
   // @UseGuards(BasicAuthGuard)
   @Post('checkout')
-  checkout(@Req() req: AppRequest, @Body() body) {
-    const userId = getUserIdFromRequest(req);
-    const cart = this.cartService.findByUserId(userId);
+  async checkout(@Req() req: AppRequest, @Body() body) {
+    // const userId = getUserIdFromRequest(req);
+    const userId = process.env.NEST_APP_USER_ID;
+    const cart = await this.cartService.findByUserId(userId);
 
     if (!(cart && cart.items.length)) {
       const statusCode = HttpStatus.BAD_REQUEST;
@@ -97,13 +100,14 @@ export class CartController {
     }
 
     const { id: cartId, items } = cart;
-    const total = calculateCartTotal(cart);
+    // Commented for now (due to no integration with products table)
+    // const total = calculateCartTotal(cart);
     const order = this.orderService.create({
       ...body, // TODO: validate and pick only necessary data
       userId,
       cartId,
       items,
-      total,
+      // total,
     });
     this.cartService.removeByUserId(userId);
 

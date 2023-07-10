@@ -29,8 +29,6 @@ export async function createApp(
     new ExpressAdapter(expressApp),
   );
 
-  console.log('Env variable from main.ts: ', process.env.DB_HOST, process.env);
-
   app.enableCors({
     origin: (req, callback) => callback(null, true),
   });

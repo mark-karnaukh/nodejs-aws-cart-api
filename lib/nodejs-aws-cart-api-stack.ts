@@ -99,6 +99,7 @@ export class NodejsAwsCartApiStack extends cdk.Stack {
         DB_USERNAME: getValueFromSecret(database.secret as ISecret, 'username'),
         DB_PASSWORD: getValueFromSecret(database.secret as ISecret, 'password'),
         DB_NAME: getValueFromSecret(database.secret as ISecret, 'dbname'),
+        NEST_APP_USER_ID: process.env.NEST_APP_USER_ID as string,
         // RDS_SECRET_ARN: database.secret?.secretArn as string,
         // RDS_SECRET: database.secret?.secretValue.unsafeUnwrap() as string,
         NODE_PATH: '$NODE_PATH:/opt',
