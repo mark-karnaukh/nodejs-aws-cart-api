@@ -1,5 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
@@ -43,7 +44,7 @@ export class NodejsAwsCartApiStack extends cdk.Stack {
     securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(5432));
 
     const database = new rds.DatabaseInstance(this, 'PostgreSQLInstance', {
-      databaseName: process.env.PG_DATABASE,
+      databaseName: process.env.DB_NAME,
       engine: rds.DatabaseInstanceEngine.POSTGRES,
       vpc,
       vpcSubnets: {
@@ -78,6 +79,10 @@ export class NodejsAwsCartApiStack extends cdk.Stack {
       ],
     });
 
+    const getValueFromSecret = (secret: ISecret, key: string): string => {
+      return secret.secretValueFromJson(key).unsafeUnwrap();
+    };
+
     const backendLambda = new lambda.Function(this, 'CartApiBackendLambda', {
       runtime: lambda.Runtime.NODEJS_16_X,
       code: lambda.Code.fromAsset('handlers/cart-api/dist'),
@@ -89,8 +94,13 @@ export class NodejsAwsCartApiStack extends cdk.Stack {
         // DB_USERNAME: process.env.DB_USERNAME as string,
         // DB_PASSWORD: process.env.DB_PASSWORD as string,
         // DB_DATABASE: process.env.DB_DATABASE as string,
-        // RDS_SECRET: database.secret?.secretValue,
-        RDS_SECRET: database.secret?.secretValue.unsafeUnwrap() as string,
+        DB_HOST: getValueFromSecret(database.secret as ISecret, 'host'),
+        DB_PORT: getValueFromSecret(database.secret as ISecret, 'port'),
+        DB_USERNAME: getValueFromSecret(database.secret as ISecret, 'username'),
+        DB_PASSWORD: getValueFromSecret(database.secret as ISecret, 'password'),
+        DB_NAME: getValueFromSecret(database.secret as ISecret, 'dbname'),
+        // RDS_SECRET_ARN: database.secret?.secretArn as string,
+        // RDS_SECRET: database.secret?.secretValue.unsafeUnwrap() as string,
         NODE_PATH: '$NODE_PATH:/opt',
       },
       vpc,
