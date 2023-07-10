@@ -31,10 +31,12 @@
     "aws-serverless-express": "^3.3.8",
     "express": "^4.17.1",
     "helmet": "^7.0.0",
+    "nest-postgres": "^0.0.8",
     "passport": "^0.6.0",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "pg": "^8.11.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "uuid": "^9.0.0"

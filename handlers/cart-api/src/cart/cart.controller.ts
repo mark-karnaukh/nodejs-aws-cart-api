@@ -1,4 +1,14 @@
-import { Controller, Get, Delete, Put, Body, Req, Post, UseGuards, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Delete,
+  Put,
+  Body,
+  Req,
+  Post,
+  UseGuards,
+  HttpStatus,
+} from '@nestjs/common';
 
 // import { BasicAuthGuard, JwtAuthGuard } from '../auth';
 import { OrderService } from '../order';
@@ -11,37 +21,41 @@ import { CartService } from './services';
 export class CartController {
   constructor(
     private cartService: CartService,
-    private orderService: OrderService
-  ) { }
+    private orderService: OrderService,
+  ) {}
 
   // @UseGuards(JwtAuthGuard)
   // @UseGuards(BasicAuthGuard)
   @Get()
   findUserCart(@Req() req: AppRequest) {
-    const cart = this.cartService.findOrCreateByUserId(getUserIdFromRequest(req));
+    const cart = this.cartService.findOrCreateByUserId(
+      getUserIdFromRequest(req),
+    );
 
     console.log(
-      'Env variables from lambda cart controller: ',
-      process.env.DB_DATABASE,
+      'Env variable from cart controller: ',
+      process.env.DB_HOST,
       process.env,
     );
 
-    console.log(
-      'App request: ', req
-    );
+    console.log('App request (user): ', req.user);
 
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
       data: { cart, total: calculateCartTotal(cart) },
-    }
+    };
   }
 
   // @UseGuards(JwtAuthGuard)
   // @UseGuards(BasicAuthGuard)
   @Put()
-  updateUserCart(@Req() req: AppRequest, @Body() body) { // TODO: validate body payload...
-    const cart = this.cartService.updateByUserId(getUserIdFromRequest(req), body)
+  updateUserCart(@Req() req: AppRequest, @Body() body) {
+    // TODO: validate body payload...
+    const cart = this.cartService.updateByUserId(
+      getUserIdFromRequest(req),
+      body,
+    );
 
     return {
       statusCode: HttpStatus.OK,
@@ -49,8 +63,8 @@ export class CartController {
       data: {
         cart,
         total: calculateCartTotal(cart),
-      }
-    }
+      },
+    };
   }
 
   // @UseGuards(JwtAuthGuard)
@@ -62,7 +76,7 @@ export class CartController {
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
-    }
+    };
   }
 
   // @UseGuards(JwtAuthGuard)
@@ -74,12 +88,12 @@ export class CartController {
 
     if (!(cart && cart.items.length)) {
       const statusCode = HttpStatus.BAD_REQUEST;
-      req.statusCode = statusCode
+      req.statusCode = statusCode;
 
       return {
         statusCode,
         message: 'Cart is empty',
-      }
+      };
     }
 
     const { id: cartId, items } = cart;
@@ -96,7 +110,7 @@ export class CartController {
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
-      data: { order }
-    }
+      data: { order },
+    };
   }
 }

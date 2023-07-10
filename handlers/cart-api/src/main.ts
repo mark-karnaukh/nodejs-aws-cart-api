@@ -29,11 +29,7 @@ export async function createApp(
     new ExpressAdapter(expressApp),
   );
 
-  console.log(
-    'Env variables from lambda main: ',
-    process.env.DB_DATABASE,
-    process.env,
-  );
+  console.log('Env variable from main.ts: ', process.env.DB_HOST, process.env);
 
   app.enableCors({
     origin: (req, callback) => callback(null, true),

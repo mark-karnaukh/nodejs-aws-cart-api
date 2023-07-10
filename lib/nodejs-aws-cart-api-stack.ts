@@ -84,17 +84,21 @@ export class NodejsAwsCartApiStack extends cdk.Stack {
       handler: 'index.handler',
       layers: [lambdaLayer],
       environment: {
-        DB_HOST: process.env.DB_HOST || '',
-        DB_PORT: process.env.DB_PORT || '',
-        DB_USERNAME: process.env.DB_USERNAME || '',
-        DB_PASSWORD: process.env.DB_PASSWORD || '',
-        DB_DATABASE: process.env.DB_DATABASE || '',
+        // DB_HOST: process.env.DB_HOST as string,
+        // DB_PORT: process.env.DB_PORT as string,
+        // DB_USERNAME: process.env.DB_USERNAME as string,
+        // DB_PASSWORD: process.env.DB_PASSWORD as string,
+        // DB_DATABASE: process.env.DB_DATABASE as string,
+        // RDS_SECRET: database.secret?.secretValue,
+        RDS_SECRET: database.secret?.secretValue.unsafeUnwrap() as string,
         NODE_PATH: '$NODE_PATH:/opt',
       },
       vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       timeout: cdk.Duration.minutes(5),
     });
+
+    // database.secret?.grantRead(backendLambda);
 
     new apigateway.LambdaRestApi(this, 'CartAPI', {
       handler: backendLambda,
