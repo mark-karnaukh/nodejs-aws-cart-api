@@ -12,7 +12,8 @@
     "diff": "cdk diff",
     "bootstrap": "cdk bootstrap",
     "deploy": "cdk deploy",
-    "destroy": "cdk destroy"
+    "destroy": "cdk destroy",
+    "cloud:infra:setup": "npm run destroy && npm run build && npm run deploy"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
