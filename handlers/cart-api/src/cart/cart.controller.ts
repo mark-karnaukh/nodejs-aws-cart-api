@@ -20,6 +20,16 @@ export class CartController {
   findUserCart(@Req() req: AppRequest) {
     const cart = this.cartService.findOrCreateByUserId(getUserIdFromRequest(req));
 
+    console.log(
+      'Env variables from lambda cart controller: ',
+      process.env.DB_DATABASE,
+      process.env,
+    );
+
+    console.log(
+      'App request: ', req
+    );
+
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',

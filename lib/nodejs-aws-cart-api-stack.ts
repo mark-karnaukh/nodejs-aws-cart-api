@@ -4,7 +4,9 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as rds from 'aws-cdk-lib/aws-rds';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export class NodejsAwsCartApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -41,7 +43,7 @@ export class NodejsAwsCartApiStack extends cdk.Stack {
     securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(5432));
 
     const database = new rds.DatabaseInstance(this, 'PostgreSQLInstance', {
-      databaseName: 'checkout',
+      databaseName: process.env.PG_DATABASE,
       engine: rds.DatabaseInstanceEngine.POSTGRES,
       vpc,
       vpcSubnets: {
@@ -82,11 +84,11 @@ export class NodejsAwsCartApiStack extends cdk.Stack {
       handler: 'index.handler',
       layers: [lambdaLayer],
       environment: {
-        // PG_HOST: process.env.PG_HOST,
-        // PG_PORT: process.env.PG_PORT,
-        // PG_USERNAME: process.env.PG_USERNAME,
-        // PG_PASSWORD: process.env.PG_PASSWORD,
-        // PG_DATABASE: process.env.PG_DATABASE,
+        DB_HOST: process.env.DB_HOST || '',
+        DB_PORT: process.env.DB_PORT || '',
+        DB_USERNAME: process.env.DB_USERNAME || '',
+        DB_PASSWORD: process.env.DB_PASSWORD || '',
+        DB_DATABASE: process.env.DB_DATABASE || '',
         NODE_PATH: '$NODE_PATH:/opt',
       },
       vpc,
