@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS orders (
     payment JSON,
     delivery JSON,
     comments VARCHAR(300),
-    status status_enum,
+    status VARCHAR(50),
     -- Total amount of order
     total INT,
     PRIMARY KEY (id),

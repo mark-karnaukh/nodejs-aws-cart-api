@@ -8,6 +8,7 @@ import { InjectClient } from 'nest-postgres';
 
 import { Cart } from '../models';
 
+// TODO: Provide error handling
 @Injectable()
 export class CartService {
   constructor(@InjectClient() private readonly pg: Client) {}
@@ -37,7 +38,7 @@ export class CartService {
       [id, userId, date, date, 'OPEN'],
     );
 
-    return { ...result.rows[0], items: [] } as Cart;
+    return { ...result.rows[0], items: [] };
   }
 
   async findOrCreateByUserId(userId: string): Promise<Cart> {
@@ -50,10 +51,20 @@ export class CartService {
     return await this.createByUserId(userId);
   }
 
-  async updateByUserId(userId: string, { items }: Cart): Promise<Cart> {
+  async updateByUserId(userId: string, { items = [], status }: Partial<Cart>): Promise<Cart> {
     const { id, ...rest } = await this.findOrCreateByUserId(userId);
 
-    const cartItems = (
+    // Creation date: PostgreSQL timestamp format
+    const date = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    const cartUpdates = ['updated_at=$1', ...(status ? ['status=$1'] : [])]
+
+    await await this.pg.query(
+      `UPDATE carts SET ${cartUpdates.join(', ')} WHERE user_id=$1 RETURNING *`,
+      [userId, date, ],
+    );
+
+    const insertedCartItems = (
       await Promise.all(
         items.map((item) => {
           return this.pg.query(
@@ -67,7 +78,7 @@ export class CartService {
     const updatedCart = {
       id,
       ...rest,
-      items: [...cartItems],
+      items: [...rest.items, ...insertedCartItems],
     };
 
     return { ...updatedCart };

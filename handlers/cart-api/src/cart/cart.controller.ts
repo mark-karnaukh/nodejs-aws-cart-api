@@ -102,14 +102,15 @@ export class CartController {
     const { id: cartId, items } = cart;
     // Commented for now (due to no integration with products table)
     // const total = calculateCartTotal(cart);
-    const order = this.orderService.create({
+    const order = await this.orderService.create({
       ...body, // TODO: validate and pick only necessary data
-      userId,
-      cartId,
+      user_id: userId,
+      cart_id: cartId,
       items,
-      // total,
+      // Hardcoded for now (no connection to products)
+      total: 100,
     });
-    this.cartService.removeByUserId(userId);
+    this.cartService.updateByUserId(userId, { status: 'ORDERED' });
 
     return {
       statusCode: HttpStatus.OK,
