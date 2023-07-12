@@ -22,11 +22,11 @@ export class NodejsAwsCartApiStack extends cdk.Stack {
           name: 'Private',
           subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
         },
-        {
-          cidrMask: 24,
-          name: 'PrivateWithEgress',
-          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
-        },
+        // {
+        //   cidrMask: 24,
+        //   name: 'PrivateWithEgress',
+        //   subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        // },
         {
           cidrMask: 24,
           name: 'Public',
@@ -105,7 +105,7 @@ export class NodejsAwsCartApiStack extends cdk.Stack {
         NODE_PATH: '$NODE_PATH:/opt',
       },
       vpc,
-      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
+      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
       timeout: cdk.Duration.minutes(5),
     });
 
