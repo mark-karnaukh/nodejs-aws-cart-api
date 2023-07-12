@@ -15,7 +15,7 @@ export class NodejsAwsCartApiStack extends cdk.Stack {
 
     // The code that defines your stack goes here
     const vpc = new ec2.Vpc(this, 'VPC', {
-      natGateways: 1,
+      // natGateways: 1,
       subnetConfiguration: [
         {
           cidrMask: 24,
