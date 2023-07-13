@@ -63,7 +63,7 @@ export class OrderService {
       });
 
       await this.pg.query(
-        `UPDATE users SET ${orderUpdates.map((updateEntry, idx) => {
+        `UPDATE orders SET ${orderUpdates.map((updateEntry, idx) => {
           const [key, _] = updateEntry;
 
           return `${key}=$${idx + 2}`
