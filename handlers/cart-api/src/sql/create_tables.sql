@@ -45,3 +45,12 @@ CREATE TABLE IF NOT EXISTS orders (
     PRIMARY KEY (id),
     FOREIGN KEY (cart_id) REFERENCES carts (id)
 );
+-- users table
+CREATE TABLE IF NOT EXISTS users (
+    -- Primary key
+    id VARCHAR DEFAULT uuid_generate_v4()::VARCHAR NOT NULL,
+    name VARCHAR (50) UNIQUE NOT NULL,
+    email VARCHAR (100) UNIQUE NOT NULL,
+    password VARCHAR (50) NOT NULL,
+    PRIMARY KEY (id)
+);
