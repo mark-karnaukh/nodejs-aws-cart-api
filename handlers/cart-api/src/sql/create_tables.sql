@@ -21,10 +21,10 @@ CREATE TABLE IF NOT EXISTS carts (
 );
 -- cart_items table
 CREATE TABLE IF NOT EXISTS cart_items (
-    cart_id uuid,
-    product_id uuid,
+    cart_id uuid NOT NULL,
+    product_id uuid NOT NULL,
     -- Number of items in a cart
-    count INT,
+    count INT NOT NULL,
     -- Foreign key from carts.id
     FOREIGN KEY (cart_id) REFERENCES carts (id)
 );
@@ -35,13 +35,13 @@ CREATE TABLE IF NOT EXISTS orders (
     -- It's not Foreign key, because there is no user entity in DB
     user_id uuid NOT NULL,
     -- Foreign key from carts.id
-    cart_id uuid,
-    payment JSON,
-    delivery JSON,
+    cart_id uuid NOT NULL,
+    payment JSON NOT NULL,
+    delivery JSON NOT NULL,
     comments VARCHAR(300),
-    status VARCHAR(50),
+    status VARCHAR(50) NOT NULL,
     -- Total amount of order
-    total INT,
+    total INT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (cart_id) REFERENCES carts (id)
 );
